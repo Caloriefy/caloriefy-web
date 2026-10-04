@@ -1,20 +1,10 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "caloriefy-web",
-  "main": ".open-next/worker.js",
   "compatibility_date": "2026-10-05",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
-    "directory": ".open-next/assets",
-    "binding": "ASSETS"
-  },
-  "services": [
-    {
-      // Must match the Worker name on the Cloudflare dashboard.
-      // Workers Builds deploys this script as caloriefy-web, while an
-      // auto-generated config was binding this to the package name "caloriefy".
-      "binding": "WORKER_SELF_REFERENCE",
-      "service": "caloriefy-web"
-    }
-  ]
+    "directory": "./public",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
 }
