@@ -1,0 +1,170 @@
+{
+  "app/layout.tsx": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903312,
+    "ast_hash": "19a8b0dcf65ebd174894ad156d1787a9",
+    "semantic_hash": "19a8b0dcf65ebd174894ad156d1787a9"
+  },
+  "app/not-found.tsx": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903346,
+    "ast_hash": "77f59096048e502ac50960a93b50f69a",
+    "semantic_hash": "77f59096048e502ac50960a93b50f69a"
+  },
+  "next.config.mjs": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903358,
+    "ast_hash": "f83b963c6c0c7e394e62e589b0ddeb25",
+    "semantic_hash": "f83b963c6c0c7e394e62e589b0ddeb25"
+  },
+  "package.json": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903365,
+    "ast_hash": "1d720bdfcadf4e19660adf285c0c485a",
+    "semantic_hash": "1d720bdfcadf4e19660adf285c0c485a"
+  },
+  "public/caloriefy-overrides.js": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.690337,
+    "ast_hash": "c55aea5f6e8be353436099647be2cbae",
+    "semantic_hash": "c55aea5f6e8be353436099647be2cbae"
+  },
+  "public/cursor-ring-field.js": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903374,
+    "ast_hash": "814f565e4ff210ae73aac27b2265f624",
+    "semantic_hash": "814f565e4ff210ae73aac27b2265f624"
+  },
+  "tsconfig.json": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903384,
+    "ast_hash": "b1b7e39d622a43890711fb854634bf42",
+    "semantic_hash": "b1b7e39d622a43890711fb854634bf42"
+  },
+  "public/404.html": {
+    "mtime": 1791154252.0,
+    "seen": 1791544684.6903389,
+    "ast_hash": "f0fa4e1034457d5c60eda7128b5d826f",
+    "semantic_hash": "f0fa4e1034457d5c60eda7128b5d826f"
+  },
+  "public/blogs.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903396,
+    "ast_hash": "5fd6666ee88f40f3a28afeed9452520d",
+    "semantic_hash": "5fd6666ee88f40f3a28afeed9452520d"
+  },
+  "public/blogs/celebrating-200k-downloads.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.69034,
+    "ast_hash": "dfb07e8be1616b6773df4186ef3978bc",
+    "semantic_hash": "dfb07e8be1616b6773df4186ef3978bc"
+  },
+  "public/blogs/consistency-over-perfection.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903405,
+    "ast_hash": "bd647163000cafbe1fe5c333cac590f6",
+    "semantic_hash": "bd647163000cafbe1fe5c333cac590f6"
+  },
+  "public/blogs/how-ai-is-transforming-nutrition-tracking.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903415,
+    "ast_hash": "2678c87323ebde64d79503802de4c872",
+    "semantic_hash": "2678c87323ebde64d79503802de4c872"
+  },
+  "public/blogs/mastering-the-ai-meal-builder.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.690342,
+    "ast_hash": "2e108c7f1d8f49dd1a2b53f76314dc5b",
+    "semantic_hash": "2e108c7f1d8f49dd1a2b53f76314dc5b"
+  },
+  "public/blogs/understanding-macros.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903424,
+    "ast_hash": "e8453ad39b99489bc8ba1bb8d417c50c",
+    "semantic_hash": "e8453ad39b99489bc8ba1bb8d417c50c"
+  },
+  "public/contact.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903431,
+    "ast_hash": "ee402f6a73756d316fcc1381dff15e76",
+    "semantic_hash": "ee402f6a73756d316fcc1381dff15e76"
+  },
+  "public/download.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903436,
+    "ast_hash": "53ad682bd420a521040b9d1574244db5",
+    "semantic_hash": "53ad682bd420a521040b9d1574244db5"
+  },
+  "public/index.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.690344,
+    "ast_hash": "311db70730ca14cc35a4ac32862e3999",
+    "semantic_hash": "311db70730ca14cc35a4ac32862e3999"
+  },
+  "public/pricing.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903448,
+    "ast_hash": "99689476b1ee14670c0bbe6c45160450",
+    "semantic_hash": "99689476b1ee14670c0bbe6c45160450"
+  },
+  "public/privacy-policy.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903453,
+    "ast_hash": "f913a3f1f65dd3d2018f1ddd23b2852f",
+    "semantic_hash": "f913a3f1f65dd3d2018f1ddd23b2852f"
+  },
+  "public/robots.txt": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.690346,
+    "ast_hash": "2e80c5bf599cf41b97a5a4c059ce8df7",
+    "semantic_hash": "2e80c5bf599cf41b97a5a4c059ce8df7"
+  },
+  "public/stories.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903465,
+    "ast_hash": "ccf16f4629bb099ce160beea9ecec599",
+    "semantic_hash": "ccf16f4629bb099ce160beea9ecec599"
+  },
+  "public/stories/april-mckinsey.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.690347,
+    "ast_hash": "2db3c0771e05548b39baa1c5b5cf6533",
+    "semantic_hash": "2db3c0771e05548b39baa1c5b5cf6533"
+  },
+  "public/stories/ava-mitchell.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903477,
+    "ast_hash": "68b812386d511ce5d370381ac4d7fd8c",
+    "semantic_hash": "68b812386d511ce5d370381ac4d7fd8c"
+  },
+  "public/stories/daniel-hayes.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903484,
+    "ast_hash": "e1f70f931e6b1879415f8801f18420c0",
+    "semantic_hash": "e1f70f931e6b1879415f8801f18420c0"
+  },
+  "public/stories/lucas-reed.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.690349,
+    "ast_hash": "885ad5df92b03ce2c2a2975831010830",
+    "semantic_hash": "885ad5df92b03ce2c2a2975831010830"
+  },
+  "public/stories/olivia-bennet.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903496,
+    "ast_hash": "15582778ef2a49296d012af41faf219f",
+    "semantic_hash": "15582778ef2a49296d012af41faf219f"
+  },
+  "public/stories/tanisha-white.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.69035,
+    "ast_hash": "c0d23815e2d7aa954e030830f73e037a",
+    "semantic_hash": "c0d23815e2d7aa954e030830f73e037a"
+  },
+  "public/terms-and-conditions.html": {
+    "mtime": 1791154024.0,
+    "seen": 1791544684.6903505,
+    "ast_hash": "5b53eca656b1f864ecb74bd809e08d07",
+    "semantic_hash": "5b53eca656b1f864ecb74bd809e08d07"
+  }
+}
