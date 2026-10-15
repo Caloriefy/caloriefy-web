@@ -123,13 +123,18 @@
     '.framer-mi5Sd[data-framer-name="Free"],.framer-mi5Sd[data-framer-name="Gold"]{background-color:#f0f0f0!important}',
     '.framer-mi5Sd[data-framer-name="Pro"]{background-color:#fff!important}',
     '.framer-1g7fdzo.caloriefy-free-name{background-color:#f6f6f6!important}',
+    "@property --neon-angle{syntax:'<angle>';initial-value:0deg;inherits:false}",
+    "@keyframes caloriefy-neon-spin{to{--neon-angle:360deg}}",
+    "@keyframes caloriefy-neon-glow{0%,100%{filter:drop-shadow(0 0 3px #00bbff) drop-shadow(0 0 8px #ff9800)}50%{filter:drop-shadow(0 0 6px #f61f34) drop-shadow(0 0 16px #529344)}}",
+    "@keyframes caloriefy-neon-shadow{0%{box-shadow:0 0 10px 0 rgba(82,147,68,.45)}25%{box-shadow:0 0 14px 1px rgba(255,152,0,.4)}50%{box-shadow:0 0 10px 0 rgba(246,31,52,.4)}75%{box-shadow:0 0 14px 1px rgba(0,187,255,.4)}100%{box-shadow:0 0 10px 0 rgba(82,147,68,.45)}}",
+    ".caloriefy-neon{position:relative;animation:caloriefy-neon-shadow 6s linear infinite}",
+    ".caloriefy-neon::after{content:'';position:absolute;inset:0;padding:2px;border-radius:inherit;pointer-events:none;",
+    "background:conic-gradient(from var(--neon-angle),#529344,#ff9800,#f61f34,#00bbff,#529344);",
+    "-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;",
+    "mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);",
+    "animation:caloriefy-neon-spin 2.5s linear infinite,caloriefy-neon-glow 2s ease-in-out infinite}",
   ].join("");
   document.head.appendChild(style);
-
-  var ring = document.createElement("script");
-  ring.src = "/cursor-ring-field.js";
-  ring.async = true;
-  document.head.appendChild(ring);
 
   new MutationObserver(function (mutations) {
     for (var i = 0; i < mutations.length; i++) {
@@ -139,6 +144,7 @@
           fixTree(m.addedNodes[k]);
           paintOpaqueCards(m.addedNodes[k]);
           markFreeNames(m.addedNodes[k]);
+          markDownloadButtons(m.addedNodes[k]);
         }
       } else {
         fixOne(m.target);
@@ -192,7 +198,19 @@
     }
   }
 
+  function markDownloadButtons(root) {
+    var scope = root && root.querySelectorAll ? root : document;
+    var links = scope.querySelectorAll ? scope.querySelectorAll("a[data-framer-name]") : [];
+    for (var i = 0; i < links.length; i++) {
+      var a = links[i];
+      var c = a.firstElementChild;
+      if (!c || c.classList.contains("caloriefy-neon")) continue;
+      if (/^Download for (iPhone|Android)$/.test((a.textContent || "").trim())) c.classList.add("caloriefy-neon");
+    }
+  }
+
   function afterPaint() {
+    markDownloadButtons(document);
     paintOpaqueCards(document);
     markFreeNames(document);
   }

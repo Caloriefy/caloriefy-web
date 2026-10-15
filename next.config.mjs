@@ -1,13 +1,10 @@
-const pages = ["pricing", "contact", "download", "blogs", "stories", "privacy-policy", "terms-and-conditions"];
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async rewrites() {
+  async redirects() {
+    // Old static-export URLs (`/pricing.html`, `/blogs/foo.html`, `/index.html`) keep working.
     return [
-      { source: "/", destination: "/index.html" },
-      ...pages.map((p) => ({ source: `/${p}`, destination: `/${p}.html` })),
-      { source: "/blogs/:slug", destination: "/blogs/:slug.html" },
-      { source: "/stories/:slug", destination: "/stories/:slug.html" },
+      { source: "/index.html", destination: "/", permanent: true },
+      { source: "/:path*.html", destination: "/:path*", permanent: true },
     ];
   },
 };

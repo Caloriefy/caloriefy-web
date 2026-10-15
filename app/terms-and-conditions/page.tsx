@@ -1,0 +1,8 @@
+import FramerPage from "@/components/framer-page";
+import { getMetadata } from "@/lib/framer";
+
+export const metadata = getMetadata("terms-and-conditions");
+
+export default function Page() {
+  return <FramerPage name="terms-and-conditions" />;
+}
