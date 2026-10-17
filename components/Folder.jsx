@@ -763,6 +763,7 @@ const placeFlap = (rank, count, phase, layout, g, pointer) => {
 const Folder = ({
   items,
   label,
+  icon,
   mode = 'flap',
   variant = 'solid',
   color = '#3d8bff',
@@ -1847,7 +1848,7 @@ const Folder = ({
         role="button"
         tabIndex={0}
         aria-expanded={isOpen}
-        aria-label={label ? `${label} folder` : 'Folder'}
+        aria-label={typeof label === 'string' && label ? `${label} folder` : 'Folder'}
         onClick={toggle}
         onKeyDown={event => {
           if (event.target !== event.currentTarget) return;
@@ -1869,6 +1870,7 @@ const Folder = ({
           </svg>
           {label && (
             <span className="folder-tab-text" style={{ left: g.tabX, width: g.tabW }}>
+              {icon}
               {label}
             </span>
           )}
@@ -1902,7 +1904,9 @@ const Folder = ({
         {book && <span ref={shadeRef} className="folder-layer folder-shade" aria-hidden="true" />}
 
         <div ref={frontRef} className="folder-layer folder-front" data-face="outer" aria-hidden="true">
-          <div className="folder-face folder-face-outer" />
+          <div className="folder-face folder-face-outer">
+            {icon && <span className="folder-front-icon">{icon}</span>}
+          </div>
           {book && (
             <div className="folder-face folder-face-inner">
               <span className="folder-inner-gutter" />
@@ -1922,6 +1926,7 @@ const Folder = ({
 
       {label && (
         <span ref={measureRef} className="folder-tab-text folder-measure" aria-hidden="true">
+          {icon}
           {label}
         </span>
       )}

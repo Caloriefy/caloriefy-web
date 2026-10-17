@@ -108,6 +108,7 @@
   position: absolute;
   top: 0;
   display: flex;
+  gap: calc(4px * var(--folder-scale));
   height: var(--folder-tab-h);
   box-sizing: border-box;
   align-items: center;
@@ -122,6 +123,12 @@
   line-height: 1;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.folder-tab-text svg {
+  flex: none;
+  width: calc(11px * var(--folder-scale));
+  height: calc(11px * var(--folder-scale));
 }
 
 .folder-measure {
@@ -189,6 +196,22 @@
   inset: 0;
   overflow: hidden;
   border-radius: var(--folder-front-radius);
+}
+
+.folder-front-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
+  filter: drop-shadow(0 calc(2px * var(--folder-scale)) calc(6px * var(--folder-scale)) rgba(0, 0, 0, 0.18));
+  pointer-events: none;
+}
+
+.folder-front-icon > svg {
+  width: calc(44px * var(--folder-scale));
+  height: calc(44px * var(--folder-scale));
 }
 
 .folder-face::after {

@@ -13,28 +13,61 @@ const images = [
   { src: IMG("fzzIg5LTVKzW5Tjl6HmSiZhO2LE"), alt: "", position: "64.8% 23.7%" },
 ];
 
-// Same card sizes as the original Framer layout (aspect ratio 0.8).
-function useCardWidth() {
-  const [width, setWidth] = useState(300);
+// Same card sizes as the original Framer layout (aspect ratio 0.8), scaled down on narrow screens so all 3 fanned cards fit inside the viewport.
+function useBounceLayout() {
+  const [vw, setVw] = useState(1200);
   useEffect(() => {
-    const update = () => setWidth(window.innerWidth >= 1200 ? 300 : window.innerWidth >= 810 ? 240 : 180);
+    const update = () => setVw(window.innerWidth);
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
-  return width;
+
+  const avail = Math.max(250, vw - 32);
+  let cardWidth: number;
+  let spreadRatio: number;
+  let pushRatio: number;
+
+  if (vw >= 1200) {
+    cardWidth = 300;
+    spreadRatio = 0.66;
+    pushRatio = 0.5;
+  } else if (vw >= 810) {
+    cardWidth = Math.min(240, Math.round(avail / 2.65));
+    spreadRatio = 0.62;
+    pushRatio = 0.42;
+  } else if (vw >= 560) {
+    cardWidth = Math.min(210, Math.round(avail / 2.55));
+    spreadRatio = 0.6;
+    pushRatio = 0.38;
+  } else {
+    cardWidth = Math.min(176, Math.round(avail / 2.38));
+    spreadRatio = 0.52;
+    pushRatio = 0.25;
+  }
+
+  const cardHeight = Math.round(cardWidth * 1.25);
+  const spread = Math.round(cardWidth * spreadRatio);
+  const drop = Math.round(cardWidth * 0.12);
+  const pushDistance = Math.round(cardWidth * pushRatio);
+  const containerWidth = Math.min(avail, Math.round(cardWidth + spread * 2 + 24));
+  const containerHeight = Math.round(cardHeight + drop + 16);
+  const radius = Math.max(20, Math.round(cardWidth * 0.14));
+  const borderWidth = cardWidth < 160 ? 3.5 : 5;
+
+  return { cardWidth, cardHeight, spread, drop, pushDistance, containerWidth, containerHeight, radius, borderWidth };
 }
 
 const SECTION = '[data-framer-name="Result Cards"]';
 const HIDE_ORIGINAL = `
+${SECTION}{height:auto!important;min-height:0!important;padding-top:16px!important;padding-bottom:16px!important}
 ${SECTION} > :not([data-bounce-host]){display:none!important}
 `;
 
 /** Replaces the Framer "Result Cards" images with React Bits BounceCards. */
 export default function ResultCards() {
   const [host, setHost] = useState<HTMLElement | null>(null);
-  const cardWidth = useCardWidth();
-  const cardHeight = cardWidth * 1.25;
+  const { cardWidth, cardHeight, spread, drop, pushDistance, containerWidth, containerHeight, radius, borderWidth } = useBounceLayout();
 
   useEffect(() => {
     const hide = document.createElement("style");
@@ -44,7 +77,7 @@ export default function ResultCards() {
 
     const el = document.createElement("div");
     el.setAttribute("data-bounce-host", "");
-    el.style.cssText = "position:relative;flex:none;z-index:1";
+    el.style.cssText = "position:relative;flex:none;z-index:1;max-width:100%;display:flex;justify-content:center";
     // Framer drops foreign nodes when it re-renders this section (e.g. on breakpoint changes), so re-attach then.
     const attach = () => {
       const parent = document.querySelector<HTMLElement>(SECTION);
@@ -64,14 +97,12 @@ export default function ResultCards() {
     };
   }, []);
 
-  const spread = cardWidth * 0.66;
-  const drop = cardWidth * 0.13;
   const content = host
     ? createPortal(
         <BounceCards
           images={images}
-          containerWidth={cardWidth * 2.6}
-          containerHeight={cardHeight}
+          containerWidth={containerWidth}
+          containerHeight={containerHeight}
           cardWidth={cardWidth}
           cardHeight={cardHeight}
           transformStyles={[
@@ -79,12 +110,12 @@ export default function ResultCards() {
             "rotate(0deg) translate(0px)",
             `rotate(10deg) translate(${spread}px, ${drop}px)`,
           ]}
-          pushDistance={cardWidth * 0.5}
+          pushDistance={pushDistance}
           hoverScale={1.06}
           bounciness={0.6}
-          borderWidth={5}
+          borderWidth={borderWidth}
           borderColor="#ffffff"
-          radius={34}
+          radius={radius}
           shadow
           enableHover
         />,
