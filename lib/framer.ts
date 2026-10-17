@@ -27,6 +27,15 @@ function fixPageLinks(html: string): string {
   );
 }
 
+/** Framer's copyright component reads this from `<html data-copyright-year>` so client and server agree. */
+export const COPYRIGHT_YEAR = new Date().getFullYear();
+
+function fixCopyrightYear(html: string): string {
+  return html
+    .replaceAll("Copyright 2024 ", `Copyright ${COPYRIGHT_YEAR} `)
+    .replaceAll("©<!-- --> <!-- -->2024<!-- -->", `©<!-- --> <!-- -->${COPYRIGHT_YEAR}<!-- -->`);
+}
+
 const cache = new Map<string, FramerContent>();
 
 export function getContent(name: string): FramerContent {
@@ -34,7 +43,7 @@ export function getContent(name: string): FramerContent {
   if (cached) return cached;
   const content = pages[name] as FramerContent | undefined;
   if (!content) notFound();
-  const fixed = { ...content, main: { ...content.main, html: fixPageLinks(content.main.html) } };
+  const fixed = { ...content, main: { ...content.main, html: fixCopyrightYear(fixPageLinks(content.main.html)) } };
   cache.set(name, fixed);
   return fixed;
 }

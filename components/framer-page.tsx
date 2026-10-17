@@ -34,6 +34,8 @@ function toProps(attrs: Record<string, string | true>) {
 function HeadElement({ item }: { item: HeadItem }): ReactNode {
   const props = toProps(item.attrs);
   if (item.html !== undefined) props.dangerouslySetInnerHTML = { __html: item.html };
+  // Framer appends to #svg-templates and the overrides script recolors it before React hydrates.
+  if (item.tag === "div") props.suppressHydrationWarning = true;
   return createElement(item.tag, props);
 }
 

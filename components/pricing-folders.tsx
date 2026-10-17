@@ -2,12 +2,17 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { isFramerHydrated, whenFramerHydrated } from "@/lib/framer-hydration";
 import Folder from "./Folder";
 
 const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 const PLANS_SELECTOR = '[data-framer-name="Plans"]';
-const CARDS = `${PLANS_SELECTOR}>[class$="-container"]`;
+// After a clean hydration Framer keeps each card inside its breakpoint wrapper (`.ssr-variant`, display: contents).
+const CARD = '[class*="-container"]';
+const CARD_CHILD = `:scope>${CARD},:scope>.ssr-variant>${CARD}`;
+/** Plan cards of the Plans container, optionally narrowed by a state suffix such as `[data-pricing-state]`. */
+const cardSel = (state = "") => `${PLANS_SELECTOR}${state}>${CARD},${PLANS_SELECTOR}${state}>.ssr-variant>${CARD}`;
 
 const PLANS = [
   { name: "Free", price: "$0", featured: false },
@@ -33,16 +38,12 @@ const ITEMS = PLANS.map((plan) => (
 // out of the top (--tx/--ty), over the folder, and down into the row. Closing plays the same path in reverse.
 const CSS = `
 ${PLANS_SELECTOR}{flex-wrap:wrap!important;justify-content:center!important;align-content:flex-start!important;transition:height .6s cubic-bezier(.4,0,.2,1)}
-${CARDS}{z-index:1}
-${PLANS_SELECTOR}:not([data-pricing-state])>[class$="-container"]{transform:translate(var(--dx,0px),var(--dy,0px)) scale(.06)!important;opacity:0!important;pointer-events:none!important}
-${PLANS_SELECTOR}[data-pricing-state]>[class$="-container"]{transform-origin:center center;animation:pricing-out .95s linear both}
-${PLANS_SELECTOR}[data-pricing-state="closed"]>[class$="-container"]{animation-name:pricing-in;animation-duration:.7s;pointer-events:none!important}
-${PLANS_SELECTOR}[data-pricing-state="open"]>[class$="-container"]{pointer-events:auto}
-${PLANS_SELECTOR}[data-pricing-state="open"]>[class$="-container"]:nth-child(3){animation-delay:.09s}
-${PLANS_SELECTOR}[data-pricing-state="open"]>[class$="-container"]:nth-child(4){animation-delay:.18s}
-${PLANS_SELECTOR}[data-pricing-state="closed"]>[class$="-container"]:nth-child(3){animation-delay:.05s}
-${PLANS_SELECTOR}[data-pricing-state="closed"]>[class$="-container"]:nth-child(2){animation-delay:.1s}
-${PLANS_SELECTOR}[data-pricing-measure]>[class$="-container"]{transform:none!important;animation:none!important;transition:none!important}
+${cardSel()}{z-index:1}
+${cardSel(":not([data-pricing-state])")}{transform:translate(var(--dx,0px),var(--dy,0px)) scale(.06)!important;opacity:0!important;pointer-events:none!important}
+${cardSel("[data-pricing-state]")}{transform-origin:center center;animation:pricing-out .95s linear both}
+${cardSel('[data-pricing-state="closed"]')}{animation-name:pricing-in;animation-duration:.7s;animation-delay:calc((2 - var(--i, 0)) * .05s);pointer-events:none!important}
+${cardSel('[data-pricing-state="open"]')}{pointer-events:auto;animation-delay:calc(var(--i, 0) * .09s)}
+${cardSel("[data-pricing-measure]")}{transform:none!important;animation:none!important;transition:none!important}
 @keyframes pricing-out{
   0%{transform:translate(var(--dx),var(--dy)) scale(.06);opacity:0;z-index:1;animation-timing-function:cubic-bezier(.3,.7,.3,1)}
   10%{opacity:1}
@@ -86,16 +87,19 @@ export default function PricingFolders() {
 
     const el = document.createElement("div");
     el.setAttribute("data-folder-host", "");
-    // Framer re-renders the plans during hydration and drops foreign nodes, so re-attach when that happens.
+    // Framer drops foreign nodes when it re-renders the plans (e.g. on breakpoint changes), so re-attach then.
     const attach = () => {
       const parent = document.querySelector<HTMLElement>(PLANS_SELECTOR);
-      if (parent && el.parentElement !== parent) parent.prepend(el);
+      if (parent && el.parentElement !== parent && isFramerHydrated(parent)) parent.prepend(el);
     };
-    attach();
-    setHost(el);
     const observer = new MutationObserver(attach);
-    observer.observe(document.body, { childList: true, subtree: true });
+    const cancel = whenFramerHydrated(PLANS_SELECTOR, (parent) => {
+      parent.prepend(el);
+      setHost(el);
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
     return () => {
+      cancel();
       observer.disconnect();
       el.remove();
       style.remove();
@@ -115,7 +119,7 @@ export default function PricingFolders() {
     const plans = document.querySelector<HTMLElement>(PLANS_SELECTOR);
     const folder = host?.querySelector<HTMLElement>(".folder-root");
     if (!plans || !folder || !host) return;
-    const cards = Array.from(plans.querySelectorAll<HTMLElement>(":scope>[class$='-container']"));
+    const cards = Array.from(plans.querySelectorAll<HTMLElement>(CARD_CHILD));
     plans.setAttribute("data-pricing-measure", "");
     plans.style.transition = "none";
     plans.style.height = "auto";
@@ -133,6 +137,7 @@ export default function PricingFolders() {
       card.style.setProperty("--tx", `${(fx - cx) * 0.45}px`);
       card.style.setProperty("--ty", `${arcY - cy}px`);
       card.style.setProperty("--rot", `${(i - 1) * 7}deg`);
+      card.style.setProperty("--i", String(i));
     });
     metrics.current = { full, closed: host.offsetHeight };
     plans.style.height = `${openRef.current ? full : metrics.current.closed}px`;

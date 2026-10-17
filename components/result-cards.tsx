@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { isFramerHydrated, whenFramerHydrated } from "@/lib/framer-hydration";
 import BounceCards from "./BounceCards";
 
 const IMG = (id: string) => `https://framerusercontent.com/images/${id}.png?width=736&height=1083`;
@@ -24,8 +25,9 @@ function useCardWidth() {
   return width;
 }
 
+const SECTION = '[data-framer-name="Result Cards"]';
 const HIDE_ORIGINAL = `
-[data-framer-name="Result Cards"] > :not([data-bounce-host]){display:none!important}
+${SECTION} > :not([data-bounce-host]){display:none!important}
 `;
 
 /** Replaces the Framer "Result Cards" images with React Bits BounceCards. */
@@ -43,16 +45,19 @@ export default function ResultCards() {
     const el = document.createElement("div");
     el.setAttribute("data-bounce-host", "");
     el.style.cssText = "position:relative;flex:none;z-index:1";
-    // Framer re-renders this section during hydration and drops foreign nodes, so re-attach when that happens.
+    // Framer drops foreign nodes when it re-renders this section (e.g. on breakpoint changes), so re-attach then.
     const attach = () => {
-      const parent = document.querySelector<HTMLElement>('[data-framer-name="Result Cards"]');
-      if (parent && el.parentElement !== parent) parent.appendChild(el);
+      const parent = document.querySelector<HTMLElement>(SECTION);
+      if (parent && el.parentElement !== parent && isFramerHydrated(parent)) parent.appendChild(el);
     };
-    attach();
-    setHost(el);
     const observer = new MutationObserver(attach);
-    observer.observe(document.body, { childList: true, subtree: true });
+    const cancel = whenFramerHydrated(SECTION, (parent) => {
+      parent.appendChild(el);
+      setHost(el);
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
     return () => {
+      cancel();
       observer.disconnect();
       el.remove();
       hide.remove();
