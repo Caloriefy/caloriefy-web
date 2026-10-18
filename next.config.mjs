@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "export",
   async redirects() {
     // Old static-export URLs (`/pricing.html`, `/blogs/foo.html`, `/index.html`) keep working.
     return [

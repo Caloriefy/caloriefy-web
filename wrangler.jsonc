@@ -2,9 +2,13 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "caloriefy-web",
   "compatibility_date": "2026-10-05",
+  "build": {
+    "command": "npm run build"
+  },
   "assets": {
-    "directory": "./public",
+    "directory": "./out",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   }
 }
+
