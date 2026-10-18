@@ -1,4 +1,5 @@
 import FramerPage from "@/components/framer-page";
+import StoryLanyard from "@/components/story-lanyard";
 import { getMetadata, getSlugs } from "@/lib/framer";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -16,5 +17,10 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function Page({ params }: Props) {
   const { slug } = await params;
-  return <FramerPage name={`stories/${slug}`} />;
+  return (
+    <>
+      <FramerPage name={`stories/${slug}`} />
+      <StoryLanyard />
+    </>
+  );
 }

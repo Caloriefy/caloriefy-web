@@ -416,7 +416,7 @@
       "attrs": {
         "rel": "modulepreload",
         "fetchpriority": "low",
-        "href": "/framer/script_main.BftHXzYt.mjs"
+        "href": "/framer/script_main.BftHXzYt.mjs?v=2"
       }
     },
     {
@@ -425,7 +425,7 @@
         "type": "module",
         "data-framer-bundle": "main",
         "fetchPriority": "low",
-        "src": "/framer/script_main.BftHXzYt.mjs"
+        "src": "/framer/script_main.BftHXzYt.mjs?v=2"
       }
     },
     {

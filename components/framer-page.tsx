@@ -32,11 +32,31 @@ function toProps(attrs: Record<string, string | true>) {
 }
 
 function HeadElement({ item }: { item: HeadItem }): ReactNode {
-  const props = toProps(item.attrs);
-  if (item.html !== undefined) props.dangerouslySetInnerHTML = { __html: item.html };
-  // Framer appends to #svg-templates and the overrides script recolors it before React hydrates.
-  if (item.tag === "div") props.suppressHydrationWarning = true;
-  return createElement(item.tag, props);
+  return createElement(item.tag, toProps(item.attrs));
+}
+
+const escapeAttr = (value: string) => value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+
+function toHtml(item: HeadItem): string {
+  const attrs = Object.entries(item.attrs)
+    .map(([key, value]) => (value === true ? ` ${key}` : ` ${key}="${escapeAttr(value)}"`))
+    .join("");
+  return `<${item.tag}${attrs}>${item.html ?? ""}</${item.tag}>`;
+}
+
+// Framer's runtime and the overrides script move, rewrite and remove these scripts, styles and #svg-templates, so
+// React must not own them: hydrating them as elements fails and React then crashes removing nodes that moved.
+const isUnmanaged = (item: HeadItem) => item.tag === "script" || item.tag === "style" || item.tag === "div";
+
+function RawItems({ items }: { items: HeadItem[] }) {
+  if (!items.length) return null;
+  return (
+    <div
+      style={{ display: "contents" }}
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{ __html: items.map(toHtml).join("") }}
+    />
+  );
 }
 
 /** Renders a page exported from Framer: head assets (styles, scripts, meta) plus the hydrated `#main` tree. */
@@ -44,14 +64,20 @@ export default function FramerPage({ name }: { name: string }) {
   const { head, main, tail } = getContent(name);
   return (
     <>
-      {head.map((item, i) => (
-        <HeadElement key={i} item={item} />
-      ))}
+      {head
+        .filter((item) => !isUnmanaged(item))
+        .map((item, i) => (
+          <HeadElement key={i} item={item} />
+        ))}
+      <RawItems items={head.filter(isUnmanaged)} />
       {/* Framer hydrates and mutates this subtree itself, so React must not diff its innerHTML. */}
       <div {...toProps(main.attrs)} suppressHydrationWarning dangerouslySetInnerHTML={{ __html: main.html }} />
-      {tail.map((item, i) => (
-        <HeadElement key={i} item={item} />
-      ))}
+      {tail
+        .filter((item) => !isUnmanaged(item))
+        .map((item, i) => (
+          <HeadElement key={i} item={item} />
+        ))}
+      <RawItems items={tail.filter(isUnmanaged)} />
     </>
   );
 }

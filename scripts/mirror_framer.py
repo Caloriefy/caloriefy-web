@@ -35,6 +35,14 @@ MAIN_PATCHES = [
     ("l=C===void 0?2024:new Date().getFullYear()", "l=C===void 0?2024:+document.documentElement.dataset.copyrightYear||new Date().getFullYear()"),
 ]
 
+# Framer's on-page editing bar is fetched from framer.com/edit/init.mjs; it only works on Framer hosting.
+EDITOR_BAR = re.compile(r"EditorBar:C===void 0\?void 0:\(\(\)=>\{.*?return\{default:e\(\)\}\}\)\}\)\(\)", re.S)
+# The .map files are not mirrored, so these comments only produce 404s in DevTools.
+SOURCE_MAP = re.compile(r"\n?//# sourceMappingURL=\S+\.map\s*$")
+# /framer/* is served as immutable; bump this whenever script_main is patched so browsers refetch it.
+MAIN_VERSION = "2"
+MAIN_REF = re.compile(r"(/framer/script_main\.[A-Za-z0-9_-]+\.mjs)(?:\?v=\w+)?")
+
 MODULE_REF = re.compile(r"""["'`]\./([A-Za-z0-9._-]+\.mjs)["'`]""")
 SITE_REF = re.compile(re.escape(SITE) + r"([A-Za-z0-9._-]+\.mjs)")
 LOCAL_REF = re.compile(re.escape(LOCAL) + r"([A-Za-z0-9._-]+\.mjs)")
@@ -72,6 +80,10 @@ def main():
                 if code.count(needle) != 1:
                     sys.exit(f"patch target not found exactly once in {name}: {needle}")
                 code = code.replace(needle, repl)
+            code, found = EDITOR_BAR.subn("EditorBar:void 0", code)
+            if found != 1:
+                sys.exit(f"EditorBar loader not found exactly once in {name}")
+        code = SOURCE_MAP.sub("\n", code)
         (OUT / name).write_text(retext(code))
         print("module", name)
 
@@ -82,6 +94,7 @@ def main():
     for p in pages:
         s = p.read_text()
         fixed = retext(SITE_REF.sub(lambda m: LOCAL + m.group(1), s))
+        fixed = MAIN_REF.sub(lambda m: f"{m.group(1)}?v={MAIN_VERSION}", fixed)
         if fixed != s:
             json.loads(fixed)
             p.write_text(fixed)
